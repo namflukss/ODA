@@ -147,7 +147,7 @@
   .sheet-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
   .sheet-head h2 { font-size: 26px; margin: 0; flex: 1; font-weight: 900; letter-spacing: -.5px; color: var(--ink); }
   .sheet-head .eyebrow { font-size: 13px; color: var(--ink-2); font-weight: 600; flex: 1; }
-  .icon-btn { background: var(--surface); border: 0; box-shadow: var(--shadow); border-radius: var(--r-md); width: 40px; height: 40px; cursor: pointer; color: var(--ink); display: flex; align-items: center; justify-content: center; transition: transform .12s; }
+  .icon-btn { background: var(--surface); border: 0; box-shadow: var(--shadow); border-radius: var(--r-md); width: 40px; height: 40px; cursor: pointer; color: var(--ink); display: flex; align-items: center; justify-content: center; transition: transform .12s cubic-bezier(.16,1,.3,1); }
   .icon-btn:active { transform: scale(.93); }
 
   /* ---------- Form ---------- */
@@ -290,7 +290,7 @@
         <div class="photo-up">
           <input type="file" id="f-photo-input" accept="image/*" hidden />
           <div class="photo-empty" id="photoEmpty">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L8 6H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-3.5l-1-2Z"/><circle cx="12" cy="13" r="3"/></svg>
             הוספת תמונה מהמכשיר
           </div>
           <div class="photo-preview" id="photoPreview" style="display:none">
@@ -310,7 +310,7 @@
               <option>ארוחת בוקר</option>
               <option>ארוחת צהריים</option>
               <option>ארוחת ערב</option>
-              <option>חטיפים</option
+              <option>חטיפים</option>
               <option>משקאות ושייקים</option>
               <option>אחר</option>
             </select>
@@ -320,7 +320,6 @@
             <input type="text" id="f-emoji" placeholder="🍠" maxlength="2" />
           </div>
         </div>
-        </select>
 
         <label for="f-ingredients">מרכיבים</label>
         <textarea id="f-ingredients" placeholder="מרכיב אחד בכל שורה…&#10;1 בטטה&#10;1 תפוח"></textarea>
@@ -358,7 +357,7 @@
 (function () {
   "use strict";
   var KEY = "littleBites.recipes.he.v1";
-  var CATEGORIES = ["מחית / פירה","ארוחת בוקר","ארוחת צהריים","ארוחת ערב","חטיפים","אוכל באצבעות","משקאות ושייקים","אחר"];
+  var CATEGORIES = ["מחית / פירה","ארוחת בוקר","ארוחת צהריים","ארוחת ערב","חטיפים","משקאות ושייקים","אחר"];
   var ALL = "הכול";
   var activeCat = ALL;
   var query = "";
@@ -366,21 +365,20 @@
   // category pastels + emoji + short caption
   var CAT_BG = {
     "מחית / פירה": "#ffe2cf", "ארוחת בוקר": "#fdf0c0", "ארוחת צהריים": "#d8f0c8", "ארוחת ערב": "#e2dcff",
-    "חטיפים": "#ffd9e6", "אוכל באצבעות": "#c9eee7", "משקאות ושייקים": "#d9e3ff", "אחר": "#e9e6f1"
+    "חטיפים": "#ffd9e6", "משקאות ושייקים": "#d9e3ff", "אחר": "#e9e6f1"
   };
   var CAT_EMOJI = {
     "מחית / פירה": "🥣", "ארוחת בוקר": "🥞", "ארוחת צהריים": "🍲", "ארוחת ערב": "🌙",
-    "חטיפים": "🍪", "אוכל באצבעות": "🥕", "משקאות ושייקים": "🥤", "אחר": "🍽️"
+    "חטיפים": "🍪", "משקאות ושייקים": "🥤", "אחר": "🍽️"
   };
   var CAT_SHORT = {
     "מחית / פירה": "מחית", "ארוחת בוקר": "בוקר", "ארוחת צהריים": "צהריים", "ארוחת ערב": "ערב",
-    "חטיפים": "חטיפים", "אוכל באצבעות": "אצבעות", "משקאות ושייקים": "משקאות", "אחר": "אחר"
+    "חטיפים": "חטיפים", "משקאות ושייקים": "משקאות", "אחר": "אחר"
   };
   function catBg(c) { return c === ALL ? "#e9e6f1" : (CAT_BG[c] || CAT_BG["אחר"]); }
   function catEmoji(c) { return c === ALL ? "✨" : (CAT_EMOJI[c] || "🍽️"); }
 
-  var ICO_WARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>';
-  var ICO_AGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>';
+  var ICO_WARN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v6M12 21h.01"/></svg>';
   var ICO_LIST = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>';
 
   // ---------- storage ----------
@@ -391,13 +389,13 @@
   }
   if (localStorage.getItem(KEY) === null) {
     save([
-      { id: uid(), name: "מחית בטטה ותפוח", cat: "מחית / פירה", emoji: "🍠", age: "4–6 חודשים",
+      { id: uid(), name: "מחית בטטה ותפוח", cat: "מחית / פירה", emoji: "🍠",
         ingredients: "1 בטטה קטנה\n1 תפוח\nמעט מים או חלב אם",
         steps: "1. לקלף ולחתוך את הבטטה והתפוח.\n2. לאדות 10–12 דקות עד שמתרכך מאוד.\n3. לטחון עד למרקם חלק, לדלל במעט מים.",
         allergens: "", notes: "מתאים להקפאה בתבניות קרח." },
-      { id: uid(), name: "אצבעות בננה ושיבולת שועל", cat: "אוכל באצבעות", emoji: "🍌", age: "9–12 חודשים",
+      { id: uid(), name: "אצבעות בננה ושיבולת שועל", cat: "חטיפים", emoji: "🍌",
         ingredients: "1 בננה בשלה\n1 כוס שיבולת שועל\n1 ביצה",
-        steps: "1. למעוך את הבננה ולערבב עם שיבולת השועל והביצה.\n2. לפרוס בתבנית ולאפות 18 דקות ב־180°C.\n3. לחתוך לאצבעות לאחר קירור.",
+        steps: "1. למעוך את הבננה ולערבב עם שיבולת השועל והביצה.\n2. לפרוס בתבנית ולאפות 18 דקות ב־180°C.\n3. לחתוך לאצבעות ללימוד אכילה עצמאית.",
         allergens: "ביצה, גלוטן", notes: "מצוין לתרגול אכילה עצמאית." }
     ]);
   }
@@ -467,11 +465,8 @@
       card.style.background = catBg(r.cat);
 
       var meta = "";
-      if (r.age) meta += '<span class="chip-meta">' + ICO_AGE + esc(r.age) + '</span>';
-      else {
-        var n = (r.ingredients || "").split("\n").filter(Boolean).length;
-        if (n) meta += '<span class="chip-meta">' + ICO_LIST + n + ' מרכיבים</span>';
-      }
+      var n = (r.ingredients || "").split("\n").filter(Boolean).length;
+      if (n) meta += '<span class="chip-meta">' + ICO_LIST + n + ' מרכיבים</span>';
       var allCount = (r.allergens||"").split(",").map(function(s){return s.trim();}).filter(Boolean).length;
       if (allCount) meta += '<span class="chip-meta warn">' + ICO_WARN + allCount + ' אלרגנים</span>';
 
@@ -492,7 +487,6 @@
     var body = document.getElementById("detailBody");
 
     var meta = "";
-    if (r.age) meta += '<span class="chip-meta">' + ICO_AGE + esc(r.age) + '</span>';
     var allCount = (r.allergens||"").split(",").map(function(s){return s.trim();}).filter(Boolean).length;
     if (allCount) meta += '<span class="chip-meta warn">' + ICO_WARN + allCount + ' אלרגנים</span>';
 
@@ -565,7 +559,6 @@
     document.getElementById("f-name").value = r ? r.name : "";
     document.getElementById("f-cat").value = r ? r.cat : "מחית / פירה";
     document.getElementById("f-emoji").value = r ? (r.emoji||"") : "";
-    document.getElementById("f-age").value = r ? (r.age||"") : "";
     document.getElementById("f-ingredients").value = r ? (r.ingredients||"") : "";
     document.getElementById("f-steps").value = r ? (r.steps||"") : "";
     document.getElementById("f-allergens").value = r ? (r.allergens||"") : "";
@@ -597,7 +590,7 @@
     return null;
   }
   function parseRecipe(text) {
-    var res = { name: "", cat: "", age: "", ingredients: "", steps: "", allergens: "", notes: "" };
+    var res = { name: "", cat: "", ingredients: "", steps: "", allergens: "", notes: "" };
     if (!text || !text.trim()) return res;
     var lines = text.replace(/\r/g, "").split("\n").map(function (l) { return l.trim(); });
     while (lines.length && lines[0] === "") lines.shift();
@@ -619,21 +612,10 @@
     res.steps = buckets.steps.join("\n").trim();
     res.allergens = buckets.allergens.join(", ").trim();
     res.notes = buckets.notes.join("\n").trim();
-    var ages = ["4–6 חודשים", "6–9 חודשים", "9–12 חודשים", "12+ חודשים"];
-    if (/חודש|month/i.test(text)) {
-      var m = text.match(/(\d{1,2})\s*[-–—]\s*(\d{1,2})/);
-      if (m) {
-        var a = m[1] + "–" + m[2];
-        if (a === "4–6") res.age = ages[0];
-        else if (a === "6–9") res.age = ages[1];
-        else if (a === "9–12") res.age = ages[2];
-      }
-      if (!res.age && /12\s*\+|12\s*חודש/.test(text)) res.age = ages[3];
-    }
     var catMap = [
       [/מחית|פירה|פיורה/, "מחית / פירה"], [/בוקר|דייסה/, "ארוחת בוקר"],
       [/צהרי/, "ארוחת צהריים"], [/ערב/, "ארוחת ערב"], [/חטיף/, "חטיפים"],
-      [/אצבע|פינגר|finger/i, "אוכל באצבעות"], [/שייק|smoothie|משקה|משקאות/i, "משקאות ושייקים"]
+      [/שייק|smoothie|משקה|משקאות/i, "משקאות ושייקים"]
     ];
     for (var c = 0; c < catMap.length; c++) {
       if (catMap[c][0].test(name) || catMap[c][0].test(text)) { res.cat = catMap[c][1]; break; }
@@ -646,7 +628,6 @@
     if (!p.name && !p.ingredients) return;
     if (p.name) document.getElementById("f-name").value = p.name;
     if (p.cat) document.getElementById("f-cat").value = p.cat;
-    if (p.age) document.getElementById("f-age").value = p.age;
     if (p.ingredients) document.getElementById("f-ingredients").value = p.ingredients;
     if (p.steps) document.getElementById("f-steps").value = p.steps;
     if (p.allergens) document.getElementById("f-allergens").value = p.allergens;
@@ -664,7 +645,6 @@
       name: document.getElementById("f-name").value.trim(),
       cat: document.getElementById("f-cat").value,
       emoji: document.getElementById("f-emoji").value.trim(),
-      age: document.getElementById("f-age").value,
       ingredients: document.getElementById("f-ingredients").value.trim(),
       steps: document.getElementById("f-steps").value.trim(),
       allergens: document.getElementById("f-allergens").value.trim(),
